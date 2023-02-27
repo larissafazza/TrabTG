@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include "ACG.h"
+#include <time.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -57,39 +59,38 @@ void menuParte1(int escolha, Grafo *grafo){
     }
 
 void menuParte2(int escolha, Grafo *grafo){
+        clock_t tempoInicial;
+        clock_t tempoFinal;
+
         switch(escolha){
             case 1:
-            {
+            {   
                 ACG *acg = new ACG(grafo);
+                tempoInicial = clock();
                 acg->encontraSubconjuntoDomPond();
-
-                acg->imprimeSolucao();
+                tempoFinal = clock();
+                //acg->imprimeSolucao();
+                cout << "Tempo de execução do Algoritmo: " << (tempoFinal - tempoInicial) << endl;
                 break;
             }
             case 2:
             {
                 ACG *acg = new ACG(grafo);
+                tempoInicial = clock();
                 float alfa[3] = {0.15, 0.3, 0.5};
                 // for(int a = 0; a < 3; a++) {
                     // acg->limparGrafo();
                     acg->encontraSubconjuntoDomPondRandomizado(0.15);
-                    acg->imprimeSolucao();
+                    //acg->imprimeSolucao();
                 // }
-                break;
-            }
-            case 3:
-            {
-                
-                break;
-            }
-            case 4:
-            {
-                grafo->imprimir();               
+                tempoFinal = clock();
+                cout << "Tempo de execução do Algoritmo: " << (tempoFinal - tempoInicial) << endl;
                 break;
             }
             default:
             {
-                cout << endl;
+                cout << "RODAR O TERCEIRO ALGORITMO" << endl;
+                break;
             }
         }
     }
@@ -131,7 +132,14 @@ int main (int argc, char const *argv[]){
             cout << "Para imprimir o grafo digite 4" << endl;
             cout << "Para sair digite 0" << endl;
             cin >> escolha;
-            menuParte2(escolha,grafo);
+            if(escolha!=0){
+                if(escolha == 1 || escolha == 2 || escolha == 3)
+                    menuParte2(escolha,grafo);
+                else if(escolha == 4)
+                    grafo->imprimir();
+                else
+                    cout << "Opção inválida, tente novamente." << endl;
+            }                
         }
     }
     else{

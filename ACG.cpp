@@ -29,7 +29,7 @@ void ACG::limparGrafo()
 bool ACG::verificaFimDaSolucao()
 {
     int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
-    return this->conectadosNaSolucao.size() == quantidadeNos;
+    return !this->conectadosNaSolucao.size() == quantidadeNos;
 }
 
 bool ACG::verificaConexao(No *e)
@@ -53,7 +53,7 @@ void ACG::ordenaVetorNos()
 {
 }
 
-void ACG::atualizaHeuristica(No *no)
+void ACG::atualizaHeuristica(list <No *> listaNos)
 {
 }
 
@@ -63,6 +63,7 @@ void ACG::encontraSubconjuntoDomPond()
 
     // vetor de todos os nós do grafo
     vector<No *> nos(quantidadeNos);
+    list <No *> listaNos;
 
     // Preenche o vetor dos nós e inicializa as heurísticas
     int i = 0;
@@ -80,41 +81,31 @@ void ACG::encontraSubconjuntoDomPond()
     ///////ORDENAR OS NÓS DE ACORDO COM A HEURÍSTICA
     this->ordenaVetorNos();
 
-    // enquanto não for o fim da solução,
-    // pegar o primeiro nó da lista dos ordenados
-    // colocar na solução
-    // colocar ele e os adjacentes na lista de conectados na solução
-    // remover ele da lista dos nós
-    // atualizar a heuristica dos nós adjacentes a ele
-    // reordenar os nós pelo valor da heuristica
 
-    /*while (!verificaFimDaSolucao())
-    {
-        if (!verificaConexao(e))
+    while (!verificaFimDaSolucao()){
+
+        // pegar o primeiro nó da lista dos ordenados
+        // colocar na solução
+        this->subconjuntoDomPond.push_back(listaNos.front());
+        this->conectadosNaSolucao.push_back(listaNos.front());
+
+        // colocar ele e os adjacentes na lista de conectados na solução
+        list <No*> nosAdjacentesAoVertice = this->grafoNaoDirecionado->encontraNosAdjacentes(listaNos.front());
+        for (it = nosAdjacentesAoVertice.begin(); it != nosAdjacentesAoVertice.end(); it++)
         {
-            this->subconjuntoDomPond.push_back(e);
-            this->conectadosNaSolucao.push_back(e);
-            list<No *> nosAdje = this->grafoNaoDirecionado->encontraNosAdjacentes(e);
-            list<No *>::iterator it;
-            for (it = nosAdje.begin(); it != nosAdje.end(); it++)
-            {
-                this->conectadosNaSolucao.push_back(*it);
-            }
+            this->conectadosNaSolucao.push_back(*it);
         }
-        melhor = -1;
-        for (k = 0; k < i; k++)
-        {
-            if (possibilidades.at(k) > melhor)
-            {
-                melhor = possibilidades.at(k);
-                posicaoDoMelhor = k;
-            }
-        }
-        e = nos.at(posicaoDoMelhor);
-        possibilidades.at(posicaoDoMelhor) = -1;
-        ind = posicaoDoMelhor-1;
-        nos.erase(nos.begin()+ (ind));
-    } */
+        // remover ele da lista dos nós
+        listaNos.pop_front();        
+        quantidadeNos --;
+
+        // atualizar a heuristica dos nós adjacentes a ele
+        this->atualizaHeuristica(nosAdjacentesAoVertice);
+
+        // reordenar os nós pelo valor da heuristica
+        this->ordenaVetorNos();
+    }
+    
 }
 
 void ACG::encontraSubconjuntoDomPondRandomizado(float alfa)

@@ -20,10 +20,10 @@ class ACG {
     bool verificaConexao(No *e);
     void calculaHeuristica();
     void ordenaVetorNos();
-    void atualizaHeuristica(No *e);
+    void atualizaHeuristica(list <No *> listaNos);
     void encontraSubconjuntoDomPond();
     void encontraSubconjuntoDomPondRandomizado(float alfa);
     int encontraNoComId(vector<No*> vet,int id);
     void imprimeSolucao();
-
+    
 };
