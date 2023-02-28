@@ -45,21 +45,21 @@ bool ACG::verificaConexao(No *e)
     return false;
 }
 
-void ACG::calculaHeuristica()
-{
-}
-
 void ACG::ordenaVetorNos()
 {
-    
+
 }
 
-void ACG::atualizaHeuristica(list <No *> listaNos, No* no)
-{
-    /*for (list<No*>::iterator it = nosAdjacentesAoVertice.begin(); it != nosAdjacentesAoVertice.end(); it++)
-    {
-        this->conectadosNaSolucao.push_back(*it);
-    }*/
+void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes, No* no)
+{   
+    int heuristica;
+    for (list<No*>::iterator it = listaNosAdjacentes.begin(); it != listaNosAdjacentes.end(); it++)
+    {   
+        heuristica = (*it)->getHeuristica() - 1;
+        (*it)->setHeuristica(heuristica);
+    }
+    heuristica = no->getHeuristica() - listaNosAdjacentes.size();
+    no->setHeuristica(heuristica);
 }
 
 void ACG::encontraSubconjuntoDomPond()

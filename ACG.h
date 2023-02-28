@@ -18,7 +18,6 @@ class ACG {
     void limparGrafo();
     bool verificaFimDaSolucao();
     bool verificaConexao(No *e);
-    void calculaHeuristica();
     void ordenaVetorNos();
     void atualizaHeuristica(list <No *> listaNos, No* no);
     void encontraSubconjuntoDomPond();
