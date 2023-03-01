@@ -19,7 +19,7 @@ class ACG {
     bool verificaFimDaSolucao();
     bool verificaConexao(No *e);
     void calculaHeuristica();
-    void ordenaVetorNos();
+    void ordenaVetorNos(std::vector<No*>& vectornos);
     void atualizaHeuristica(No *e);
     void encontraSubconjuntoDomPond();
     void encontraSubconjuntoDomPondRandomizado(float alfa);

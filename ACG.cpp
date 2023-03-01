@@ -49,8 +49,13 @@ void ACG::calculaHeuristica()
 {
 }
 
-void ACG::ordenaVetorNos()
-{
+void ACG::ordenaVetorNos(std::vector<No*>& vectornos) {
+    std::sort(vectornos.begin(), vectornos.end(), compararPorHeur);
+}
+
+// Função de comparação para ordenar os objetos No pelo atributo 'heur'
+bool compararPorHeur(const No* a, const No* b) {
+    return a->heur > b->heur;
 }
 
 void ACG::atualizaHeuristica(No *no)
@@ -78,7 +83,7 @@ void ACG::encontraSubconjuntoDomPond()
     }
 
     ///////ORDENAR OS NÓS DE ACORDO COM A HEURÍSTICA
-    this->ordenaVetorNos();
+    this->ordenaVetorNos(nos);
 
     // enquanto não for o fim da solução,
     // pegar o primeiro nó da lista dos ordenados
