@@ -18,6 +18,7 @@ class ACG {
     void limparGrafo();
     bool verificaFimDaSolucao();
     bool verificaConexao(No *e);
+    bool compararPorHeur(const No* a, const No* b);
     void calculaHeuristica();
     void ordenaVetorNos(std::vector<No*>& vectornos);
     void atualizaHeuristica(No *e);

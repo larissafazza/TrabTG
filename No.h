@@ -11,12 +11,13 @@ class No {
     No *proxNo; //ponteiro que aponta para o proximo nó;
     Aresta *primeira; //ponteiro para a primeira aresta;
     int grau;
-    float heur;
+   
     bool visitado;
     bool jaEstaNaSolucao;
     float coeficiente;
 
     public:
+    float heur;
     No();
     ~No();
 
