@@ -18,8 +18,10 @@ class ACG {
     void limparGrafo();
     bool verificaFimDaSolucao();
     bool verificaConexao(No *e);
-    void ordenaVetorNos();
-    void atualizaHeuristica(list <No *> listaNos, No* no);
+    bool compararPorHeur(const No* a, const No* b);
+    void calculaHeuristica();
+    void ordenaVetorNos(std::vector<No*>& vectornos);
+    void atualizaHeuristica(No *e);
     void encontraSubconjuntoDomPond();
     void encontraSubconjuntoDomPondRandomizado(float alfa);
     int encontraNoComId(vector<No*> vet,int id);
