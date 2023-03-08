@@ -71,7 +71,6 @@ void ACG::encontraSubconjuntoDomPond()
     int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
 
     // vetor de todos os nós do grafo
-    vector<No *> nos(quantidadeNos);
     list <No *> listaNos;
 
     // Preenche o vetor dos nós e inicializa as heurísticas
