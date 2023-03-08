@@ -45,8 +45,8 @@ bool ACG::verificaConexao(No *e)
     return false;
 }
 
-void ACG::ordenaVetorNos(std::vector<No*>& vectornos) {
-    std::sort(vectornos.begin(), vectornos.end(), compararPorHeur);
+void ACG::ordenaVetorNos(std::list<No*>& vectornos) {
+    sort(vectornos.begin(), vectornos.end(), compararPorHeur);
 }
 
 // Função de comparação para ordenar os objetos No pelo atributo 'heur'
