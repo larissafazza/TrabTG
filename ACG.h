@@ -21,7 +21,7 @@ class ACG {
     bool compararPorHeur(const No* a, const No* b);
     void calculaHeuristica();
     void ordenaVetorNos(std::vector<No*>& vectornos);
-    void atualizaHeuristica(No *e);
+    void atualizaHeuristica(list <No *> listaNosAdjacentes, No* no);
     void encontraSubconjuntoDomPond();
     void encontraSubconjuntoDomPondRandomizado(float alfa);
     int encontraNoComId(vector<No*> vet,int id);

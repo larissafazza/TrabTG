@@ -1,4 +1,4 @@
-s/// TAD Algoritmo Construtivo Guloso (ACG)
+/// TAD Algoritmo Construtivo Guloso (ACG)
 
 #include "No.h"
 #include <iostream>
@@ -80,15 +80,15 @@ void ACG::encontraSubconjuntoDomPond()
     { 
         // if grau == 0, coloca ele na solução
         // else...
-        nos.at(i) = aux;
+        listaNos.push_back(aux);
         float grau = aux->getGrau();
         float peso = aux->getPeso();
-        nos.at(i)->setHeuristica(grau / peso);
+        listaNos.back()->setHeuristica(grau/peso);
         i++;
     }
 
     ///////ORDENAR OS NÓS DE ACORDO COM A HEURÍSTICA
-    this->ordenaVetorNos(nos);
+    this->ordenaVetorNos(listaNos);
 
 
     while (!verificaFimDaSolucao()){
@@ -114,7 +114,8 @@ void ACG::encontraSubconjuntoDomPond()
         quantidadeNos --;
 
         // reordenar os nós pelo valor da heuristica
-        this->ordenaVetorNos();
+        this->ordenaVetorNos(listaNos);
+        //std::vector<No*>& vectornos
     }
     
 }
