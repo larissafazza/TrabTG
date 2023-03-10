@@ -29,6 +29,8 @@ void ACG::limparGrafo()
 bool ACG::verificaFimDaSolucao()
 {
     int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
+    if(!this->conectadosNaSolucao.size() == quantidadeNos)
+        cout << "AQUI FIM" << endl;
     return !this->conectadosNaSolucao.size() == quantidadeNos;
 }
 
@@ -45,8 +47,11 @@ bool ACG::verificaConexao(No *e)
     return false;
 }
 
-void ACG::ordenaVetorNos(std::list<No*>& vectornos) {
-    sort(vectornos.begin(), vectornos.end(), compararPorHeur);
+void ACG::ordenaVetorNos(std::list<No*> lista_nos) {
+    cout << lista_nos.front()->getHeuristica() << endl;
+    lista_nos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
+    cout << lista_nos.front()->getHeuristica() << endl;
+    //sort(lista_nos.begin(), lista_nos.end(), compararPorHeur);
 }
 
 // Função de comparação para ordenar os objetos No pelo atributo 'heur'
@@ -70,13 +75,13 @@ void ACG::encontraSubconjuntoDomPond()
 {
     int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
 
-    // vetor de todos os nós do grafo
+    // lista de todos os nós do grafo
     list <No *> listaNos;
 
     // Preenche o vetor dos nós e inicializa as heurísticas
     int i = 0;
     for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-    { 
+    {  
         // if grau == 0, coloca ele na solução
         // else...
         listaNos.push_back(aux);
@@ -89,6 +94,7 @@ void ACG::encontraSubconjuntoDomPond()
     ///////ORDENAR OS NÓS DE ACORDO COM A HEURÍSTICA
     this->ordenaVetorNos(listaNos);
 
+    cout << "AQUI 3" << endl;
 
     while (!verificaFimDaSolucao()){
 
