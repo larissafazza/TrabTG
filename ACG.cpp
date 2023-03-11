@@ -30,7 +30,9 @@ bool ACG::verificaFimDaSolucao()
 {
     int quantidadeDeNos = this->grafoNaoDirecionado->getQuantidadeNos();
     bool fim = (this->conectadosNaSolucao.size() == quantidadeDeNos);
-    cout << "Eh o fim ? => " << fim << endl;
+    // cout << "quantidadeDeNos: " << quantidadeDeNos << endl;
+    // cout << "conectadosNaSolucao.size(): " << this->conectadosNaSolucao.size() << endl;
+
     return fim;
 }
 
@@ -47,7 +49,7 @@ bool ACG::verificaConexao(No *e)
     return false;
 }
 
-void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes, No* no)
+void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes)
 {   
     int heuristica;
     for (list<No*>::iterator it = listaNosAdjacentes.begin(); it != listaNosAdjacentes.end(); it++)
@@ -55,14 +57,10 @@ void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes, No* no)
         heuristica = (*it)->getHeuristica() - 1;
         (*it)->setHeuristica(heuristica);
     }
-    heuristica = no->getHeuristica() - listaNosAdjacentes.size();
-    no->setHeuristica(heuristica);
 }
 
 void ACG::encontraSubconjuntoDomPond()
 {   
-    int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
-
     // lista de todos os nós do grafo
     list <No *> listaNos;
 
@@ -73,20 +71,12 @@ void ACG::encontraSubconjuntoDomPond()
     {   
         if(aux->getGrau()== 0){
             this->subconjuntoDomPond.push_back(aux);
-            this->conectadosNaSolucao.push_back(aux);
-            list <No*> nosAdjacentesAoVertice = this->grafoNaoDirecionado->encontraNosAdjacentes(aux);
-            for (list<No*>::iterator it = nosAdjacentesAoVertice.begin(); it != nosAdjacentesAoVertice.end(); it++)
-            {
-                this->conectadosNaSolucao.push_back(*it);
-            }
-            this->atualizaHeuristica(nosAdjacentesAoVertice, aux);
-            
-            listaNos.pop_front();        
-            quantidadeNos --;
-
-            listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
+            if(!verificaConexao(aux))
+                this->conectadosNaSolucao.push_back(aux);    
         }
+
         else{
+
             listaNos.push_back(aux);
             float grau = aux->getGrau();
             float peso = aux->getPeso();
@@ -103,36 +93,27 @@ void ACG::encontraSubconjuntoDomPond()
         No* melhorEscolha = listaNos.front();
 
         // pegar o primeiro nó da lista dos ordenados
-        // colocar na solução
+        // colocar na solução              
         this->subconjuntoDomPond.push_back(melhorEscolha);
-        this->conectadosNaSolucao.push_back(melhorEscolha);
+        if(!verificaConexao(melhorEscolha))
+            this->conectadosNaSolucao.push_back(melhorEscolha);
 
         // colocar ele e os adjacentes na lista de conectados na solução
         list <No*> nosAdjacentesAoVertice = this->grafoNaoDirecionado->encontraNosAdjacentes(melhorEscolha);
         for (list<No*>::iterator it = nosAdjacentesAoVertice.begin(); it != nosAdjacentesAoVertice.end(); it++)
-        {
-            this->conectadosNaSolucao.push_back(*it);
+        {   
+            if(!verificaConexao(*it))
+                this->conectadosNaSolucao.push_back(*it);
         }
 
         // atualizar a heuristica dos nós adjacentes a ele
-        this->atualizaHeuristica(nosAdjacentesAoVertice, melhorEscolha);
+        this->atualizaHeuristica(nosAdjacentesAoVertice);
         
         // remover ele da lista dos nós
         listaNos.pop_front();        
-        quantidadeNos --;
 
         // reordenar os nós pelo valor da heuristica
-        cout << "\nLISTA ANTES DA ORDENACAO: " << endl;
-        for (list<No*>::iterator it = listaNos.begin(); it != listaNos.end(); it++)
-        {
-            cout << (*it)->getHeuristica() << " ";
-        }
         listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
-        cout << "\nLISTA DEPOIS DA ORDENACAO: " << endl;
-        for (list<No*>::iterator it = listaNos.begin(); it != listaNos.end(); it++)
-        {
-            cout << (*it)->getHeuristica() << " ";
-        }
     }
     
 }

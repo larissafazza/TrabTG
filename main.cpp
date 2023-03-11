@@ -67,9 +67,11 @@ void menuParte2(int escolha, Grafo *grafo){
             {   
                 ACG *acg = new ACG(grafo);
                 tempoInicial = clock();
+                cout << "Tempo Inicial: " << tempoInicial << endl;
                 acg->encontraSubconjuntoDomPond();
                 tempoFinal = clock();
-                //acg->imprimeSolucao();
+                acg->imprimeSolucao();
+                cout << "Tempo Final: " << tempoFinal << endl;
                 cout << "Tempo de execução do Algoritmo: " << (tempoFinal - tempoInicial) << endl;
                 break;
             }
