@@ -20,7 +20,6 @@ class ACG {
     bool verificaConexao(No *e);
     bool compararPorHeur(const No* a, const No* b);
     void calculaHeuristica();
-    void ordenaVetorNos(std::list<No*> lista_nos);
     void atualizaHeuristica(list <No *> listaNosAdjacentes, No* no);
     void encontraSubconjuntoDomPond();
     void encontraSubconjuntoDomPondRandomizado(float alfa);

@@ -28,10 +28,10 @@ void ACG::limparGrafo()
 
 bool ACG::verificaFimDaSolucao()
 {
-    int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
-    if(!this->conectadosNaSolucao.size() == quantidadeNos)
-        cout << "AQUI FIM" << endl;
-    return !this->conectadosNaSolucao.size() == quantidadeNos;
+    int quantidadeDeNos = this->grafoNaoDirecionado->getQuantidadeNos();
+    bool fim = (this->conectadosNaSolucao.size() == quantidadeDeNos);
+    cout << "Eh o fim ? => " << fim << endl;
+    return fim;
 }
 
 bool ACG::verificaConexao(No *e)
@@ -47,18 +47,6 @@ bool ACG::verificaConexao(No *e)
     return false;
 }
 
-void ACG::ordenaVetorNos(std::list<No*> lista_nos) {
-    cout << lista_nos.front()->getHeuristica() << endl;
-    lista_nos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
-    cout << lista_nos.front()->getHeuristica() << endl;
-    //sort(lista_nos.begin(), lista_nos.end(), compararPorHeur);
-}
-
-// Função de comparação para ordenar os objetos No pelo atributo 'heur'
-bool compararPorHeur(const No* a, const No* b) {
-    return a->heur > b->heur;
-}
-
 void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes, No* no)
 {   
     int heuristica;
@@ -72,7 +60,7 @@ void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes, No* no)
 }
 
 void ACG::encontraSubconjuntoDomPond()
-{
+{   
     int quantidadeNos = this->grafoNaoDirecionado->getQuantidadeNos();
 
     // lista de todos os nós do grafo
@@ -80,25 +68,40 @@ void ACG::encontraSubconjuntoDomPond()
 
     // Preenche o vetor dos nós e inicializa as heurísticas
     int i = 0;
+
     for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-    {  
-        // if grau == 0, coloca ele na solução
-        // else...
-        listaNos.push_back(aux);
-        float grau = aux->getGrau();
-        float peso = aux->getPeso();
-        listaNos.back()->setHeuristica(grau/peso);
-        i++;
+    {   
+        if(aux->getGrau()== 0){
+            this->subconjuntoDomPond.push_back(aux);
+            this->conectadosNaSolucao.push_back(aux);
+            list <No*> nosAdjacentesAoVertice = this->grafoNaoDirecionado->encontraNosAdjacentes(aux);
+            for (list<No*>::iterator it = nosAdjacentesAoVertice.begin(); it != nosAdjacentesAoVertice.end(); it++)
+            {
+                this->conectadosNaSolucao.push_back(*it);
+            }
+            this->atualizaHeuristica(nosAdjacentesAoVertice, aux);
+            
+            listaNos.pop_front();        
+            quantidadeNos --;
+
+            listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
+        }
+        else{
+            listaNos.push_back(aux);
+            float grau = aux->getGrau();
+            float peso = aux->getPeso();
+            listaNos.back()->setHeuristica(grau/peso);
+            i++;
+        }
     }
 
     ///////ORDENAR OS NÓS DE ACORDO COM A HEURÍSTICA
-    this->ordenaVetorNos(listaNos);
-
-    cout << "AQUI 3" << endl;
+    listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
 
     while (!verificaFimDaSolucao()){
 
         No* melhorEscolha = listaNos.front();
+
         // pegar o primeiro nó da lista dos ordenados
         // colocar na solução
         this->subconjuntoDomPond.push_back(melhorEscolha);
@@ -119,8 +122,17 @@ void ACG::encontraSubconjuntoDomPond()
         quantidadeNos --;
 
         // reordenar os nós pelo valor da heuristica
-        this->ordenaVetorNos(listaNos);
-        //std::vector<No*>& vectornos
+        cout << "\nLISTA ANTES DA ORDENACAO: " << endl;
+        for (list<No*>::iterator it = listaNos.begin(); it != listaNos.end(); it++)
+        {
+            cout << (*it)->getHeuristica() << " ";
+        }
+        listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
+        cout << "\nLISTA DEPOIS DA ORDENACAO: " << endl;
+        for (list<No*>::iterator it = listaNos.begin(); it != listaNos.end(); it++)
+        {
+            cout << (*it)->getHeuristica() << " ";
+        }
     }
     
 }
