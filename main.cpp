@@ -5,6 +5,9 @@
 #include "ACG.h"
 #include <time.h>
 #include <stdio.h>
+#include <chrono>
+
+using namespace std::chrono;
 
 using namespace std;
 
@@ -47,8 +50,14 @@ void menuParte1(int escolha, Grafo *grafo){
                 break;
             }
             case 4:
-            {
-                grafo->imprimir();
+            {   Grafo *grafo_rede_pert = new Grafo(grafo->getDirecionado(),grafo->getPesoAresta());
+                cout << "Digite o arquivo que esta o grafo que deseja unir ao atual:" << endl;
+                string nome_arquivo;
+                cin >> nome_arquivo;
+                ///Leitura l2;    
+                //l2.leitura(nome_arquivo,grafo_uniao);
+                grafo_rede_pert->leitura(nome_arquivo);
+                grafo->redePert(grafo_rede_pert);
                 break;
             }
             default:
@@ -59,34 +68,40 @@ void menuParte1(int escolha, Grafo *grafo){
     }
 
 void menuParte2(int escolha, Grafo *grafo){
-        clock_t tempoInicial;
-        clock_t tempoFinal;
 
         switch(escolha){
             case 1:
             {   
                 ACG *acg = new ACG(grafo);
-                tempoInicial = clock();
-                cout << "Tempo Inicial: " << tempoInicial << endl;
+                // Obter o tempo atual antes de chamar a função
+                auto start = high_resolution_clock::now();
+                
                 acg->encontraSubconjuntoDomPond();
-                tempoFinal = clock();
+
+                // Obter o tempo atual após a execução da função
+                auto stop = high_resolution_clock::now();
+                
+                // Calcular a duração da execução em microssegundos
+                auto duration = duration_cast<microseconds>(stop - start);
+
+                // Exibir o tempo de execução em microssegundos
+                cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
+                
                 acg->imprimeSolucao();
-                cout << "Tempo Final: " << tempoFinal << endl;
-                cout << "Tempo de execução do Algoritmo: " << (tempoFinal - tempoInicial) << endl;
+                
                 break;
             }
             case 2:
             {
                 ACG *acg = new ACG(grafo);
-                tempoInicial = clock();
+                
                 float alfa[3] = {0.15, 0.3, 0.5};
                 // for(int a = 0; a < 3; a++) {
                     // acg->limparGrafo();
                     acg->encontraSubconjuntoDomPondRandomizado(0.15);
                     //acg->imprimeSolucao();
                 // }
-                tempoFinal = clock();
-                cout << "Tempo de execução do Algoritmo: " << (tempoFinal - tempoInicial) << endl;
+                
                 break;
             }
             default:
@@ -127,7 +142,7 @@ int main (int argc, char const *argv[]){
         grafo->leituraParte2(argv[1]);
         int escolha = -1;
         while(escolha != 0){
-            cout << "----- MENU -----" << endl;
+            cout << "\n----- MENU -----" << endl;
             cout << "Para obter o Algoritmo Construtivo Guloso 1" << endl;
             cout << "Para obter o Algoritmo Guloso Randomizado Adaptavivo 2" << endl;
             cout << "Para obter o Algorirtmo Guloso Randomizado Reativo 3" << endl;

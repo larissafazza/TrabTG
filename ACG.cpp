@@ -252,6 +252,6 @@ void ACG::imprimeSolucao()
 
     for (it = this->subconjuntoDomPond.begin(); it != this->subconjuntoDomPond.end(); it++)
     {
-        std::cout << (*it)->getId() << endl;
+        std::cout << (*it)->getId() << " ";
     }
 }
