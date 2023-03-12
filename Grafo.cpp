@@ -284,6 +284,38 @@ void Grafo::diferenca(Grafo *diferenca)
     cout << "===========================================" << endl;
     imprimirDot(novo);
 }
+/*
+int ACG::pesoMaisLongo(list <No *> listaNos, int id) {
+    int peso = 0;
+    list<int>::iterator it = listaNos.begin();
+    advance(it, 5);
+     cout << *it;
+
+    for (int i = 0; i < lilatividades[id].antecessoras.size(); i++) {
+    for(int i=0; i<(*it).)
+        int antecessora = atividades[id].antecessoras[i];
+        int t = pesoMaisLongo(atividades, antecessora);
+        if (t > peso) {
+            peso = t;
+        }
+    }
+    return peso + atividades[id].peso;
+}
+*/
+void Grafo::redePert(Grafo *redepert){
+/*
+
+// Encontra o peso mais longo de cada atividade
+    for (int i = 0; i < atividades.size(); i++) {
+        atividades[i].peso_inicio = pesoMaisLongo(atividades, i);
+        atividades[i].peso_fim = atividades[i].peso_inicio + atividades[i].peso;
+    }
+
+    // Imprime os pesos mais longos de cada atividade
+    for (int i = 0; i < atividades.size(); i++) {
+        cout << "Atividade " << atividades[i].id << ": " << atividades[i].peso_inicio << " - " << atividades[i].peso_fim << endl;
+    }*/
+}
 void Grafo::intersecao(Grafo *intersecao)
 {
     cout << "Intersecao: " << endl

@@ -39,6 +39,7 @@ class Grafo {
     void subConjDominante();
     list<No*> encontraNosAdjacentes(No *vertice);
     void diferenca(Grafo *diferenca);
+    void redePert(Grafo *redepert);
     void intersecao(Grafo *intersecao);
     void resetarNos();
     No *getNoCoeficiente(float c);
