@@ -189,6 +189,93 @@ void ACG::encontraSubconjuntoDomPondRandomizado(float alfa)
     
 }
 
+double ACG::encontraSolucao(float alfa){
+    //encontrar o subconjunto dopminante poderado e calcular a heuristica da solucao = soma dos pesos dos nós da solução * numero de nós na soluçao.
+    double heuristica = 0;
+    this->encontraSubconjuntoDomPondRandomizado(alfa);
+    for (list<No*>::iterator it = this->subconjuntoDomPond.begin(); it != this->subconjuntoDomPond.end(); it++)
+    {   
+        heuristica += (*it)->getPeso();
+    }
+
+    return heuristica*subconjuntoDomPond.size();
+}
+/*
+public void atualizarProbabilidades(mediaDeCadaAlfa, numeroExecucoesDeCadaAlfa, melhorSulucao) {
+    somaDasMedias = 0;
+    for(i : cada alfa) {
+        if(numeroExecucoesDeCadaAlfa[i] == 0){
+        mediaDeCadaAlfa[i] = 0;
+    } else {
+            mediaDeCadaAlfa[i] = mediaDeCadaAlfa[i] / numeroExecucoesDeCadaAlfa[i];
+            somaDasMedias += mediaDeCadaAlfa[i];
+        }
+    }
+    for(i : cada alfa) {
+        probabilidadeDeCadaAlfa[i] = mediaDeCadaAlfa[i] / somaDasMedias;
+        mediaDeCadaAlfa[i] = 0;
+        numeroExecucoesDeCadaAlfa[i] = 0;
+    }
+}*/
+
+int ACG::sorteiaAlfa(float *probabilidades) {
+    
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    float somaProbabilidades = 0;
+
+    //PEGAR UM NÚMERO ALEATÓRIO ENTRE 0 e 1
+    std::uniform_real_distribution<> distrib(0, 1);
+    // Gera um número inteiro aleatório
+    float valorRand = (double)distrib(gen);
+
+    int i;
+    for(i=0; i<5; i++) {
+        somaProbabilidades  += probabilidades[i];
+        if(somaProbabilidades >= valorRand){
+            break;
+        }
+    }
+    return i-1;
+}
+
+void ACG::encontraSubconjuntoDomPondRandomizadoAdaptativo(float *alfas){
+    
+    
+    /*alfas = [0.05, 0.10, 0.15, 0.30, 0,50];
+    float probabilidadeDeCadaAlfa = [0.2, 0.2, 0.2, 0.2, 0.2]
+    double mediaHeuristicaCadaAlfa = [0, 0, 0, 0, 0];
+    int numeroExecucoesDeCadaAlfa = [0, 0, 0, 0, 0];
+    int iteracoes = 2500;
+    int contadorExecucoes = 0;
+    double melhorSolucao = 0;
+    while (contadorExecucoes < iteracoes) {
+
+        idAlfa = sorteiaAlfa(probabilidadeDeCadaAlfa); // Valor entre 0 e 4
+
+        double valorHeuristica = encontraSolucao(alfas[indAlfa]);
+
+        mediaHeuristicaCadaAlfa[idAlfa] += valorHeuristica;
+        numeroExecucoesDeCadaAlfa[idAlfa]++;
+
+        if(contadorExecucoes % 250 == 0) {
+            atualizarProbabilidades(mediaDeCadaAlfa, numeroExecucoesDeCadaAlfa, melhorSolucao );
+        }
+
+        if (solucaoEhMelhor(melhorSolucao, solucao)) {
+            melhorSolucao = solucao;
+        }
+
+        contadorExecucoes++;
+
+        //printarEstatisticas();
+
+        acg->limparGrafo();
+    }
+    */
+}
+
 int ACG::encontraNoComId(vector<No *> vet, int id)
 {
 

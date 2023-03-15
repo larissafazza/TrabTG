@@ -147,15 +147,13 @@ void menuParte2(int escolha, Grafo *grafo){
                 break;
             }
             default:
-            {   /*
+            {   
                 ACG *acg = new ACG(grafo);
                 
-                float alfa[3] = {0.15, 0.3, 0.5};
+                float alfa[] = {0.05, 0.10, 0.15, 0.30, 0,50};
+
                 auto start = high_resolution_clock::now();
-                for(int a = 0; a < 3; a++) {
-                    acg->limparGrafo();
-                    acg->encontraSubconjuntoDomPondRandomizadoAdaptativo(0.3);
-                }
+                acg->encontraSubconjuntoDomPondRandomizadoAdaptativo(alfa);
                 auto stop = high_resolution_clock::now();
 
                 // Calcular a duração da execução em microssegundos
@@ -163,7 +161,7 @@ void menuParte2(int escolha, Grafo *grafo){
 
                 // Exibir o tempo de execução em microssegundos
                 cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
-                */
+                
                 //acg->imprimeSolucao();
                 break;
             }
