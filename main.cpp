@@ -72,23 +72,37 @@ void menuParte2(int escolha, Grafo *grafo){
         switch(escolha){
             case 1:
             {   
+                int vezes;
+                cout << "Informe quantas vezes deseja rodar o algoritmo" << endl;
+                cin >> vezes;
+
+                double tempoMedioDeExecucao = 0;
+
                 ACG *acg = new ACG(grafo);
-                // Obter o tempo atual antes de chamar a função
-                auto start = high_resolution_clock::now();
-                
-                acg->encontraSubconjuntoDomPond();
 
-                // Obter o tempo atual após a execução da função
-                auto stop = high_resolution_clock::now();
-                
-                // Calcular a duração da execução em microssegundos
-                auto duration = duration_cast<microseconds>(stop - start);
+                for(int a = 0; a < vezes; a++) {
+                    acg->limparGrafo();
 
-                // Exibir o tempo de execução em microssegundos
-                cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
-                
+                    // Obter o tempo atual antes de chamar a função
+                    auto start = high_resolution_clock::now();
+                    
+                    acg->encontraSubconjuntoDomPond();
+
+                    // Obter o tempo atual após a execução da função
+                    auto stop = high_resolution_clock::now();
+                    
+                    // Calcular a duração da execução em microssegundos
+                    auto duration = duration_cast<microseconds>(stop - start);
+
+                    // Exibir o tempo de execução em microssegundos
+                    cout << "\nTempo de execucao da " << a+1 << "a vez = " << (double)duration.count()/100000 << " segundos" << endl;
+                    
+                    tempoMedioDeExecucao += (double)duration.count()/100000;
+                                      
+                }
                 acg->imprimeSolucao();
-                
+                cout << "\n\nO tempo medio de execucao foi de " << tempoMedioDeExecucao/vezes << " segundos." << endl;
+
                 break;
             }
             case 2:
@@ -96,6 +110,8 @@ void menuParte2(int escolha, Grafo *grafo){
                 int vezes;
                 cout << "Informe quantas vezes deseja rodar o algoritmo" << endl;
                 cin >> vezes;
+
+                double tempoMedioDeExecucao = 0;
 
                 ACG *acg = new ACG(grafo);
                 
@@ -109,7 +125,8 @@ void menuParte2(int escolha, Grafo *grafo){
                 }
 
                 for(int a = 0; a < vezes; a++) {
-                    // acg->limparGrafo();
+                    acg->limparGrafo();
+
                     auto start = high_resolution_clock::now();
                     acg->encontraSubconjuntoDomPondRandomizado(alfa[escolhaAlfa-1]);
                     auto stop = high_resolution_clock::now();
@@ -117,16 +134,16 @@ void menuParte2(int escolha, Grafo *grafo){
                     // Calcular a duração da execução do algoritmo em microssegundos 
                     auto duration = duration_cast<microseconds>(stop - start);
 
-                    cout << "Tempo de execucao da " << a << "a vez: " << (double)duration.count()/100000 << " microssegundos" << endl;
+                    // Exibir o tempo de execução em microssegundos
+                    cout << "\n\nTempo de execucao da " << a+1 << "a vez: " << (double)duration.count()/100000 << " segundos." << endl;
                 
-                    //acg->imprimeSolucao();
+                    acg->imprimeSolucao();
+
+                    tempoMedioDeExecucao += (double)duration.count()/100000;
                 }
 
+                cout << "\n\nO tempo medio de execucao foi de " << tempoMedioDeExecucao/vezes << " segundos." << endl;
 
-                // Exibir o tempo de execução em microssegundos
-                //cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
-                
-                acg->imprimeSolucao();
                 break;
             }
             default:

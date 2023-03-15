@@ -202,7 +202,7 @@ int ACG::encontraNoComId(vector<No *> vet, int id)
 }
 void ACG::imprimeSolucao()
 {
-    std::cout << "Imprime a solucao" << endl;
+    std::cout << "\nImprime a solucao:" << endl;
     list<No *>::iterator it;
 
     for (it = this->subconjuntoDomPond.begin(); it != this->subconjuntoDomPond.end(); it++)
