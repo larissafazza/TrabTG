@@ -92,23 +92,39 @@ void menuParte2(int escolha, Grafo *grafo){
                 break;
             }
             case 2:
-            {
+            {   
+                int vezes;
+                cout << "Informe quantas vezes deseja rodar o algoritmo" << endl;
+                cin >> vezes;
+
                 ACG *acg = new ACG(grafo);
                 
                 float alfa[3] = {0.15, 0.3, 0.5};
-                // for(int a = 0; a < 3; a++) {
+                
+                int escolhaAlfa = 0;
+                while(escolhaAlfa!=1 && escolhaAlfa !=2 && escolhaAlfa != 3){
+                    cout << "Escolha seu valor de alfa:" << endl;
+                    cout << "Digite 1 para alfa = 0.15\nDigite 2 para alfa = 0.3\nDigite 3 para afa = 0.5" << endl;
+                    cin >> escolhaAlfa;
+                }
+
+                for(int a = 0; a < vezes; a++) {
                     // acg->limparGrafo();
                     auto start = high_resolution_clock::now();
-                    acg->encontraSubconjuntoDomPondRandomizado(0.3);
+                    acg->encontraSubconjuntoDomPondRandomizado(alfa[escolhaAlfa-1]);
                     auto stop = high_resolution_clock::now();
-                    //acg->imprimeSolucao();
-                // }
+                    
+                    // Calcular a duração da execução do algoritmo em microssegundos 
+                    auto duration = duration_cast<microseconds>(stop - start);
 
-                // Calcular a duração da execução do algoritmo em microssegundos 
-                auto duration = duration_cast<microseconds>(stop - start);
+                    cout << "Tempo de execucao da " << a << "a vez: " << (double)duration.count()/100000 << " microssegundos" << endl;
+                
+                    //acg->imprimeSolucao();
+                }
+
 
                 // Exibir o tempo de execução em microssegundos
-                cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
+                //cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
                 
                 acg->imprimeSolucao();
                 break;
