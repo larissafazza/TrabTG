@@ -285,12 +285,8 @@ void Grafo::diferenca(Grafo *diferenca)
     imprimirDot(novo);
 }
 /*
-int ACG::pesoMaisLongo(list <No *> listaNos, int id) {
+int ACG::pesoMaisLongo(list <Aresta *> listaArestas, int id) {
     int peso = 0;
-    list<int>::iterator it = listaNos.begin();
-    advance(it, 5);
-     cout << *it;
-
     for (int i = 0; i < lilatividades[id].antecessoras.size(); i++) {
     for(int i=0; i<(*it).)
         int antecessora = atividades[id].antecessoras[i];
@@ -300,6 +296,22 @@ int ACG::pesoMaisLongo(list <No *> listaNos, int id) {
         }
     }
     return peso + atividades[id].peso;
+}
+
+Aresta * maiorPeso(List<Aresta*> listaArestas, int id)
+{
+    int peso = 0;
+    //percorre uma lista dos nós adjacentes ao nó de id do parâmetro
+    /*  
+        
+    }
+        int idAresta =  (*it)->getId();
+        Aresta *aux = maiorPeso (listaArestasNo, idAresta);
+        if(aux->getPeso() > peso)
+              peso = aux->getPeso();
+return peso + ~Pegar o peso da Aresta da id ~;
+
+
 }
 */
 void Grafo::redePert(Grafo *redepert){

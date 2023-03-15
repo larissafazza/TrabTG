@@ -7,6 +7,7 @@
 #include <list>
 #include <algorithm>
 #include <cmath>
+#include <random>
 
 using namespace std;
 
@@ -120,118 +121,72 @@ void ACG::encontraSubconjuntoDomPond()
 
 void ACG::encontraSubconjuntoDomPondRandomizado(float alfa)
 {
-    int cont = 0;
-    {
-        cont++;
-    }
+    //CONFIGURAÇÂO PARA GERAR VALOR ALEATÓRIO
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
-    
-    //for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx()<int> ordematualizada(cont));
+   // lista de todos os nós do grafo
+    list <No *> listaNos;
 
-    vector<float> possibilidades(cont);
-
+    // Preenche o vetor dos nós e inicializa as heurísticas
     int i = 0;
     for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-    {
-        float grau = aux->getGrau();
-        float peso = aux->getPeso();
-        grau = grau - peso;
-        if (grau < 0)
-            grau = grau * (-1);
-        possibilidades.at(i) = grau;
-        i++;
-    } // lista com os valores de k. Melhor solução = maior valor
+    {   
+        if(aux->getGrau()== 0){
+            this->subconjuntoDomPond.push_back(aux);
+            if(!verificaConexao(aux))
+                this->conectadosNaSolucao.push_back(aux);    
+        }
 
-    // Ordenar
-    float atual = 0;
-    int k;
-    std::sort(possibilidades.begin(), possibilidades.end(), greater<float>());
+        else{
 
-    vector<No *> nos(cont);
-
-    for (int k = 0; k < cont; k++)
-    {
-        for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-        {
+            listaNos.push_back(aux);
             float grau = aux->getGrau();
             float peso = aux->getPeso();
-            grau = grau - peso;
-            //if (grau == possibilidades.at(k))
-               // ordematualizada.at(k) = aux->getId();
+            listaNos.back()->setHeuristica(grau/peso);
+            i++;
         }
     }
 
-    int p = 0;
-    for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-    {
-        nos.at(p) = aux;
-        p++;
-    }
-    // pegar melhor alternativa
-    int n = std::ceil(possibilidades.size() * alfa);
-    int posicaoRandom = rand() % n;
-    std::cout << "Posicao random: " << posicaoRandom << endl;
+    ///////ORDENAR OS NÓS DE ACORDO COM A HEURÍSTICA
+    listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
 
-    //int index = this->encontraNoComId(nos, ordematualizada.at(posicaoRandom));
-    int index = 0;
-    No *e = nos.at(index);
+    while (!verificaFimDaSolucao()){
 
-    possibilidades.at(posicaoRandom) = -1;
-    // for(int k =0; k< i; k++) {
-    //     cout << possibilidades.at(k) << endl;
-    // }
-    std::sort(possibilidades.begin(), possibilidades.end(), greater<float>());
+        //PEGAR UM NÚMERO ALEATÓRIO ENTRE OS alfa primeiros da lista
+        float espacoEscolhaNo = alfa * listaNos.size();
+        std::uniform_int_distribution<> distrib(0, espacoEscolhaNo);
+        // Gera um número aleatório
+        int aleatorio = distrib(gen);
 
-     for (int k = 0; k < cont; k++)
-        {
-        for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-        {
-            float grau = aux->getGrau();
-            float peso = aux->getPeso();
-            grau = grau - peso;
-           // if (grau == possibilidades.at(k))
-            //    ordematualizada.at(k) = aux->getId();
-        }
-        }
-    while (!verificaFimDaSolucao())
-    {
-        for (int k = 0; k < cont; k++)
-        {
-            for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
-            {
-                float grau = aux->getGrau();
-                float peso = aux->getPeso();
-                grau = grau - peso;
-                //if (grau == possibilidades.at(k))
-                  //  ordematualizada.at(k) = aux->getId();
-            }
-        }
-        if (!verificaConexao(e))
-        {
-            this->subconjuntoDomPond.push_back(e);
-            this->conectadosNaSolucao.push_back(e);
-            list<No *> nosAdje = this->grafoNaoDirecionado->encontraNosAdjacentes(e);
-            list<No *>::iterator it;
-            for (it = nosAdje.begin(); it != nosAdje.end(); it++)
-            {
+        auto iterator = listaNos.begin();
+        advance(iterator, aleatorio);
+        No* melhorEscolha = *iterator;
+
+        // pegar o primeiro nó da lista dos ordenados
+        // colocar na solução              
+        this->subconjuntoDomPond.push_back(melhorEscolha);
+        if(!verificaConexao(melhorEscolha))
+            this->conectadosNaSolucao.push_back(melhorEscolha);
+
+        // colocar ele e os adjacentes na lista de conectados na solução
+        list <No*> nosAdjacentesAoVertice = this->grafoNaoDirecionado->encontraNosAdjacentes(melhorEscolha);
+        for (list<No*>::iterator it = nosAdjacentesAoVertice.begin(); it != nosAdjacentesAoVertice.end(); it++)
+        {   
+            if(!verificaConexao(*it))
                 this->conectadosNaSolucao.push_back(*it);
-            }
         }
-        // int n = std::ceil(possibilidades.size() * alfa);
-        posicaoRandom = rand() % n;
-        std::cout << "Posicao random: " << posicaoRandom << endl;
-        std::cout << "Possibilidades: " << possibilidades.at(posicaoRandom) << endl;
-        for (int k = 0; k < i; k++)
-        {
-            std::cout << possibilidades.at(k) << endl;
-        }
-        //index = this->encontraNoComId(nos, ordematualizada.at(posicaoRandom));
-        e = nos.at(index);
-        possibilidades.at(posicaoRandom) = -1;
-        std::sort(possibilidades.begin(), possibilidades.end(), greater<float>());
 
-         
+        // atualizar a heuristica dos nós adjacentes a ele
+        this->atualizaHeuristica(nosAdjacentesAoVertice);
+        
+        // remover ele da lista dos nós
+        listaNos.erase(iterator);   
+
+        // reordenar os nós pelo valor da heuristica
+        listaNos.sort([](const No* no1, const No* no2) { return no1->heur > no2->heur; });
     }
+    
 }
 
 int ACG::encontraNoComId(vector<No *> vet, int id)

@@ -98,15 +98,40 @@ void menuParte2(int escolha, Grafo *grafo){
                 float alfa[3] = {0.15, 0.3, 0.5};
                 // for(int a = 0; a < 3; a++) {
                     // acg->limparGrafo();
-                    acg->encontraSubconjuntoDomPondRandomizado(0.15);
+                    auto start = high_resolution_clock::now();
+                    acg->encontraSubconjuntoDomPondRandomizado(0.3);
+                    auto stop = high_resolution_clock::now();
                     //acg->imprimeSolucao();
                 // }
+
+                // Calcular a duração da execução em microssegundos
+                auto duration = duration_cast<microseconds>(stop - start);
+
+                // Exibir o tempo de execução em microssegundos
+                cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
                 
+                acg->imprimeSolucao();
                 break;
             }
             default:
-            {
-                cout << "RODAR O TERCEIRO ALGORITMO" << endl;
+            {   /*
+                ACG *acg = new ACG(grafo);
+                
+                float alfa[3] = {0.15, 0.3, 0.5};
+                auto start = high_resolution_clock::now();
+                for(int a = 0; a < 3; a++) {
+                    acg->limparGrafo();
+                    acg->encontraSubconjuntoDomPondRandomizadoAdaptativo(0.3);
+                }
+                auto stop = high_resolution_clock::now();
+
+                // Calcular a duração da execução em microssegundos
+                auto duration = duration_cast<microseconds>(stop - start);
+
+                // Exibir o tempo de execução em microssegundos
+                cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
+                */
+                //acg->imprimeSolucao();
                 break;
             }
         }
