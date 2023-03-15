@@ -104,7 +104,7 @@ void menuParte2(int escolha, Grafo *grafo){
                     //acg->imprimeSolucao();
                 // }
 
-                // Calcular a duração da execução em microssegundos
+                // Calcular a duração da execução do algoritmo em microssegundos 
                 auto duration = duration_cast<microseconds>(stop - start);
 
                 // Exibir o tempo de execução em microssegundos
