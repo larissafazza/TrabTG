@@ -22,8 +22,8 @@ class ACG {
     void calculaHeuristica();
     void atualizaHeuristica(list <No *> listaNosAdjacentes);
     void encontraSubconjuntoDomPond();
-    void encontraSubconjuntoDomPondRandomizado(float alfa);
-    void encontraSubconjuntoDomPondRandomizadoAdaptativo(float *alfa);
+    float encontraSubconjuntoDomPondRandomizado(float alfa);
+    float encontraSubconjuntoDomPondRandomizadoAdaptativo(float *alfa);
     double encontraSolucao(float alfa);
     int sorteiaAlfa(float *probabilidades);
     void atualizaProbabilidades(double *mediaDeCadaAlfa, int *execucoes, float *probabilidades);

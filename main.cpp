@@ -69,6 +69,10 @@ void menuParte1(int escolha, Grafo *grafo){
 
 void menuParte2(int escolha, Grafo *grafo){
 
+    string arquivoSaida = "resultados.txt";
+    ofstream file;
+    file.open(arquivoSaida.c_str());
+
         switch(escolha){
             case 1:
             {   
@@ -95,9 +99,9 @@ void menuParte2(int escolha, Grafo *grafo){
                     auto duration = duration_cast<microseconds>(stop - start);
 
                     // Exibir o tempo de execução em microssegundos
-                    cout << "\nTempo de execucao da " << a+1 << "a vez = " << (double)duration.count()/100000 << " segundos" << endl;
+                    cout << "\nTempo de execucao da " << a+1 << "a vez = " << (double)duration.count()/1000000 << " segundos" << endl;
                     
-                    tempoMedioDeExecucao += (double)duration.count()/100000;
+                    tempoMedioDeExecucao += (double)duration.count()/1000000;
                                       
                 }
                 acg->imprimeSolucao();
@@ -107,9 +111,9 @@ void menuParte2(int escolha, Grafo *grafo){
             }
             case 2:
             {   
-                int vezes;
-                cout << "Informe quantas vezes deseja rodar o algoritmo" << endl;
-                cin >> vezes;
+                int iteracoes = 500; //para testes
+                float qualidadeAlgoritmo; //quanto menor o valor, mais eficiente é o algoritmo
+                float qualidadeMedia = 0;
 
                 double tempoMedioDeExecucao = 0;
 
@@ -117,32 +121,46 @@ void menuParte2(int escolha, Grafo *grafo){
                 
                 float alfa[3] = {0.15, 0.3, 0.5};
                 
-                int escolhaAlfa = 0;
-                while(escolhaAlfa!=1 && escolhaAlfa !=2 && escolhaAlfa != 3){
-                    cout << "Escolha seu valor de alfa:" << endl;
-                    cout << "Digite 1 para alfa = 0.15\nDigite 2 para alfa = 0.3\nDigite 3 para afa = 0.5" << endl;
-                    cin >> escolhaAlfa;
-                }
-
-                for(int a = 0; a < vezes; a++) {
-                    acg->limparGrafo();
-
-                    auto start = high_resolution_clock::now();
-                    acg->encontraSubconjuntoDomPondRandomizado(alfa[escolhaAlfa-1]);
-                    auto stop = high_resolution_clock::now();
+                float alfaAtual;
+                for(int alfaId = 0; alfaId < 3; alfaId++){
                     
-                    // Calcular a duração da execução do algoritmo em microssegundos 
-                    auto duration = duration_cast<microseconds>(stop - start);
+                    alfaAtual = alfa[alfaId];
 
-                    // Exibir o tempo de execução em microssegundos
-                    cout << "\n\nTempo de execucao da " << a+1 << "a vez: " << (double)duration.count()/100000 << " segundos." << endl;
-                
-                    acg->imprimeSolucao();
+                    file << "Para alfa = " << alfaAtual << endl;
 
-                    tempoMedioDeExecucao += (double)duration.count()/100000;
+                    int vezes = 0; //para testes
+                    while(vezes < 10){
+                        for(int a = 0; a < iteracoes; a++) {
+                            acg->limparGrafo();
+                            auto start = high_resolution_clock::now();
+                            qualidadeAlgoritmo = acg->encontraSubconjuntoDomPondRandomizado(alfaAtual);
+                            auto stop = high_resolution_clock::now();
+
+                            qualidadeAlgoritmo = qualidadeAlgoritmo/1000;
+                            qualidadeMedia += qualidadeAlgoritmo; // dividido por 1000 apenas para deixar a variável com um valor menor
+                            
+
+                            // // Exibir o tempo de execução em microssegundos
+                            // cout << "\n\nTempo de execucao da " << a+1 << "a vez: " << (double)duration.count()/1000000 << " segundos." << endl;
+
+                            // cout << "Variavel de qualidade do algoritmo: " << qualidadeAlgoritmo << endl; 
+                            //acg->imprimeSolucao();
+
+
+                            // Calcular a duração da execução do algoritmo em microssegundos 
+                            auto duration = duration_cast<microseconds>(stop - start);
+                            tempoMedioDeExecucao += (double)duration.count()/1000000;
+                        }
+
+                        // cout << "\n\nO tempo medio de execucao foi de " << tempoMedioDeExecucao/vezes << " segundos." << endl;
+                        // cout << "O valor medio da variavel de qualidade foi de " << qualidadeMedia/vezes << "." << endl;
+                        file << "Iteracao " << vezes << endl;
+
+                        file << tempoMedioDeExecucao/iteracoes << endl;
+                        file << qualidadeMedia/iteracoes << endl << endl;
+                        vezes++;
+                    }                    
                 }
-
-                cout << "\n\nO tempo medio de execucao foi de " << tempoMedioDeExecucao/vezes << " segundos." << endl;
 
                 break;
             }
@@ -150,18 +168,31 @@ void menuParte2(int escolha, Grafo *grafo){
             {   
                 ACG *acg = new ACG(grafo);
                 
+                int vezes = 0;
+
                 float alfa[5] = {0.05, 0.10, 0.15, 0.30, 0.50};
-
-                auto start = high_resolution_clock::now();
-                acg->encontraSubconjuntoDomPondRandomizadoAdaptativo(alfa);
-                auto stop = high_resolution_clock::now();
-
-                // Calcular a duração da execução em microssegundos
-                auto duration = duration_cast<microseconds>(stop - start);
-
-                // Exibir o tempo de execução em microssegundos
-                cout << "Tempo de execucao: " << (double)duration.count()/100000 << " microssegundos" << endl;
                 
+                float alfaUtilizadoSolucao = 0;
+
+                while(vezes<10)
+                {
+                    auto start = high_resolution_clock::now();
+                    alfaUtilizadoSolucao = acg->encontraSubconjuntoDomPondRandomizadoAdaptativo(alfa);
+                    auto stop = high_resolution_clock::now();
+
+                    // Calcular a duração da execução em microssegundos
+                    auto duration = duration_cast<microseconds>(stop - start);
+
+                    cout << "Solucao: ";
+                    acg->imprimeSolucao();
+                    // Exibir o tempo de execução em microssegundos
+                    cout << "\nTempo de execucao: " << (double)duration.count()/1000000 << " segundos" << endl;
+                    
+                    cout << "Alfa utilizado: " << alfaUtilizadoSolucao << endl << endl;
+
+                    vezes++;
+
+                }
                 break;
             }
         }
