@@ -256,7 +256,7 @@ void ACG::encontraSubconjuntoDomPondRandomizadoAdaptativo(float *alfas){
     float probabilidadeDeCadaAlfa[5] = {0.2, 0.2, 0.2, 0.2, 0.2};
     double mediaHeuristicaCadaAlfa[5] = {0, 0, 0, 0, 0};
     int numeroExecucoesDeCadaAlfa[5] = {0, 0, 0, 0, 0};
-    int iteracoes = 30;
+    int iteracoes = 2500;
     int contadorExecucoes = 0;
     double melhorHeur = 0;
     list <No*> solucaoProblema;
