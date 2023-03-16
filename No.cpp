@@ -67,6 +67,14 @@ int No::getPeso()
 {
     return this->peso;
 }
+void No::setGrauDaSolucao(int grauDaSolucao)
+{
+    this->grauDaSolucao = grauDaSolucao;
+}
+int No::getGrauDaSolucao()
+{
+    return this->grauDaSolucao;
+}
 int No::getId()
 {
     return this->id;

@@ -26,6 +26,7 @@ class ACG {
     void encontraSubconjuntoDomPondRandomizadoAdaptativo(float *alfa);
     double encontraSolucao(float alfa);
     int sorteiaAlfa(float *probabilidades);
+    void atualizaProbabilidades(double *mediaDeCadaAlfa, int *execucoes, float *probabilidades);
     int encontraNoComId(vector<No*> vet,int id);
     void imprimeSolucao();
     

@@ -11,6 +11,7 @@ class No {
     No *proxNo; //ponteiro que aponta para o proximo nó;
     Aresta *primeira; //ponteiro para a primeira aresta;
     int grau;
+    int grauDaSolucao;
    
     bool visitado;
     bool jaEstaNaSolucao;
@@ -33,6 +34,8 @@ class No {
     bool getVisitado();
     void setVisitado(bool visitado);
     int getGrau();
+    int getGrauDaSolucao();
+    void setGrauDaSolucao(int grau);
     No* getProx();
     Aresta* getPrimeira();
     void inserirAresta(int id, float peso);

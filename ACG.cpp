@@ -55,8 +55,12 @@ void ACG::atualizaHeuristica(list <No *> listaNosAdjacentes)
     int heuristica;
     for (list<No*>::iterator it = listaNosAdjacentes.begin(); it != listaNosAdjacentes.end(); it++)
     {   
-        heuristica = (*it)->getHeuristica() - 1;
-        (*it)->setHeuristica(heuristica);
+        float grau = (*it)->getGrauDaSolucao() - 1;
+        (*it)->setGrauDaSolucao(grau);
+        float peso = (*it)->getPeso();
+        (*it)->setHeuristica(grau/peso);
+        // heuristica = (*it)->getHeuristica() - 1;
+        // (*it)->setHeuristica(heuristica);
     }
 }
 
@@ -70,6 +74,7 @@ void ACG::encontraSubconjuntoDomPond()
 
     for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
     {   
+        aux->setGrauDaSolucao(aux->getGrau());
         if(aux->getGrau()== 0){
             this->subconjuntoDomPond.push_back(aux);
             if(!verificaConexao(aux))
@@ -79,7 +84,7 @@ void ACG::encontraSubconjuntoDomPond()
         else{
 
             listaNos.push_back(aux);
-            float grau = aux->getGrau();
+            float grau = aux->getGrauDaSolucao();
             float peso = aux->getPeso();
             listaNos.back()->setHeuristica(grau/peso);
             i++;
@@ -132,7 +137,9 @@ void ACG::encontraSubconjuntoDomPondRandomizado(float alfa)
     int i = 0;
     for (No *aux = this->grafoNaoDirecionado->getPrimeiro(); aux != nullptr; aux = aux->getProx())
     {   
+        aux->setGrauDaSolucao(aux->getGrau());
         if(aux->getGrau()== 0){
+            aux->setHeuristica(0);
             this->subconjuntoDomPond.push_back(aux);
             if(!verificaConexao(aux))
                 this->conectadosNaSolucao.push_back(aux);    
@@ -141,7 +148,7 @@ void ACG::encontraSubconjuntoDomPondRandomizado(float alfa)
         else{
 
             listaNos.push_back(aux);
-            float grau = aux->getGrau();
+            float grau = aux->getGrauDaSolucao();
             float peso = aux->getPeso();
             listaNos.back()->setHeuristica(grau/peso);
             i++;
@@ -192,31 +199,34 @@ void ACG::encontraSubconjuntoDomPondRandomizado(float alfa)
 double ACG::encontraSolucao(float alfa){
     //encontrar o subconjunto dopminante poderado e calcular a heuristica da solucao = soma dos pesos dos nós da solução * numero de nós na soluçao.
     double heuristica = 0;
+    this->limparGrafo();
     this->encontraSubconjuntoDomPondRandomizado(alfa);
     for (list<No*>::iterator it = this->subconjuntoDomPond.begin(); it != this->subconjuntoDomPond.end(); it++)
     {   
-        heuristica += (*it)->getPeso();
+        cout << "Peso da heuristica: " << (*it)->getHeuristica() << " - " ;
+        heuristica += (*it)->getHeuristica();
     }
-
-    return heuristica*subconjuntoDomPond.size();
+    // cout << "\n HEURISTICA = " << heuristica*subconjuntoDomPond.size() << endl;
+    return heuristica / subconjuntoDomPond.size();
 }
-/*
-public void atualizarProbabilidades(mediaDeCadaAlfa, numeroExecucoesDeCadaAlfa, melhorSulucao) {
-    somaDasMedias = 0;
-    for(i : cada alfa) {
-        if(numeroExecucoesDeCadaAlfa[i] == 0){
-        mediaDeCadaAlfa[i] = 0;
-    } else {
-            mediaDeCadaAlfa[i] = mediaDeCadaAlfa[i] / numeroExecucoesDeCadaAlfa[i];
-            somaDasMedias += mediaDeCadaAlfa[i];
+
+void ACG::atualizaProbabilidades(double *mediaDeCadaAlfa, int *execucoes, float *probabilidades){
+    cout << "Fucao atualizaProbabilidades" << endl;
+    double somaDasMediasHeuristicas = 0;
+    for(int i = 0; i<5 ; i++) {
+        if(execucoes[i] == 0){
+            mediaDeCadaAlfa[i] = 0;
+        } else {
+            mediaDeCadaAlfa[i] = mediaDeCadaAlfa[i] / execucoes[i];
+            somaDasMediasHeuristicas += mediaDeCadaAlfa[i];
         }
     }
-    for(i : cada alfa) {
-        probabilidadeDeCadaAlfa[i] = mediaDeCadaAlfa[i] / somaDasMedias;
+    for(int i = 0; i<5 ; i++) {
+        probabilidades[i] = mediaDeCadaAlfa[i] / somaDasMediasHeuristicas;
         mediaDeCadaAlfa[i] = 0;
-        numeroExecucoesDeCadaAlfa[i] = 0;
+        execucoes[i] = 0;
     }
-}*/
+}
 
 int ACG::sorteiaAlfa(float *probabilidades) {
     
@@ -228,52 +238,71 @@ int ACG::sorteiaAlfa(float *probabilidades) {
     //PEGAR UM NÚMERO ALEATÓRIO ENTRE 0 e 1
     std::uniform_real_distribution<> distrib(0, 1);
     // Gera um número inteiro aleatório
-    float valorRand = (double)distrib(gen);
+    float valorRand = (double) distrib(gen);
+    cout << "Valor sorteado: " << valorRand << endl;
 
-    int i;
-    for(i=0; i<5; i++) {
+    int i = 0;
+    for (i=0; i < 5; i++) {
         somaProbabilidades  += probabilidades[i];
         if(somaProbabilidades >= valorRand){
             break;
         }
     }
-    return i-1;
+    return i;
 }
 
 void ACG::encontraSubconjuntoDomPondRandomizadoAdaptativo(float *alfas){
-    
-    
-    /*alfas = [0.05, 0.10, 0.15, 0.30, 0,50];
-    float probabilidadeDeCadaAlfa = [0.2, 0.2, 0.2, 0.2, 0.2]
-    double mediaHeuristicaCadaAlfa = [0, 0, 0, 0, 0];
-    int numeroExecucoesDeCadaAlfa = [0, 0, 0, 0, 0];
-    int iteracoes = 2500;
+
+    float probabilidadeDeCadaAlfa[5] = {0.2, 0.2, 0.2, 0.2, 0.2};
+    double mediaHeuristicaCadaAlfa[5] = {0, 0, 0, 0, 0};
+    int numeroExecucoesDeCadaAlfa[5] = {0, 0, 0, 0, 0};
+    int iteracoes = 30;
     int contadorExecucoes = 0;
-    double melhorSolucao = 0;
+    double melhorHeur = 0;
+    list <No*> solucaoProblema;
+
     while (contadorExecucoes < iteracoes) {
 
-        idAlfa = sorteiaAlfa(probabilidadeDeCadaAlfa); // Valor entre 0 e 4
+        contadorExecucoes++;
+        int idAlfa = sorteiaAlfa(probabilidadeDeCadaAlfa); // Valor entre 0 e 4
 
-        double valorHeuristica = encontraSolucao(alfas[indAlfa]);
+        cout << "Alfa selecionado: " << alfas[idAlfa] << endl;
+        cout << "Alfa selecionado: " << idAlfa << endl;
+
+        double valorHeuristica = encontraSolucao(alfas[idAlfa]);
+        cout << "heuristica: " << valorHeuristica << endl;
+        cout << "tamanho da solucao: " << this->subconjuntoDomPond.size() << endl;
 
         mediaHeuristicaCadaAlfa[idAlfa] += valorHeuristica;
         numeroExecucoesDeCadaAlfa[idAlfa]++;
 
         if(contadorExecucoes % 250 == 0) {
-            atualizarProbabilidades(mediaDeCadaAlfa, numeroExecucoesDeCadaAlfa, melhorSolucao );
+            atualizaProbabilidades(mediaHeuristicaCadaAlfa, numeroExecucoesDeCadaAlfa, probabilidadeDeCadaAlfa);
         }
 
-        if (solucaoEhMelhor(melhorSolucao, solucao)) {
-            melhorSolucao = solucao;
+        if (valorHeuristica > melhorHeur) {
+            cout << "Encontrou soluco melhor" << endl;
+            solucaoProblema.clear();
+            melhorHeur = valorHeuristica;
+
+            
+            //this->imprimeSolucao();
+            for (list<No*>::iterator it = this->subconjuntoDomPond.begin(); it != this->subconjuntoDomPond.end(); it++)
+            {   
+                solucaoProblema.push_back(*it);
+            }
+       }
+
+        cout << contadorExecucoes << "a solucao: " << endl;
+        for (list<No*>::iterator it = solucaoProblema.begin(); it != solucaoProblema.end(); it++)
+        {   
+            cout << (*it)->getId() << " ";
         }
+        cout << "\n" << endl;
+        //PRINTAS INFPORMAÇÕES
 
-        contadorExecucoes++;
-
-        //printarEstatisticas();
-
-        acg->limparGrafo();
+        this->limparGrafo();
     }
-    */
 }
 
 int ACG::encontraNoComId(vector<No *> vet, int id)
